@@ -21,6 +21,7 @@ const navItems = [
   { label: "Inicio", href: "#inicio" },
   { label: "Recomendador", href: "#recomendador" },
   { label: "Nosotros", href: "#nosotros" },
+  { label: "Medios de Pago", href: "#medios-de-pago" },
   { label: "Contacto", href: "#contacto" },
 ];
 

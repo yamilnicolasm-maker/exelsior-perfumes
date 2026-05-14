@@ -4,6 +4,7 @@ import ProductGrid from "@/components/ProductGrid";
 import Recommender from "@/components/Recommender";
 import Benefits from "@/components/Benefits";
 import Reviews from "@/components/Reviews";
+import PaymentMethods from "@/components/PaymentMethods";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -16,6 +17,7 @@ export default function Home() {
       <Recommender />
       <Benefits />
       <Reviews />
+      <PaymentMethods />
       <FinalCTA />
       <Footer />
     </main>
