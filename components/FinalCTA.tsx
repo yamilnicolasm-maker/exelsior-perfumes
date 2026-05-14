@@ -44,16 +44,16 @@ export default function FinalCTA() {
   return (
     <section
       id="contacto"
-      className="relative py-24 overflow-hidden bg-gradient-to-b from-black via-red-950/20 to-black"
+      className="relative py-12 sm:py-24 overflow-hidden bg-gradient-to-b from-black via-red-950/20 to-black"
     >
       <div className="absolute inset-0 -z-10">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-red-900/30 rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-red-900/20 rounded-full blur-3xl animate-pulse" />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="text-5xl sm:text-6xl font-bold text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-16">
+        <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
             Ponete en{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
               contacto

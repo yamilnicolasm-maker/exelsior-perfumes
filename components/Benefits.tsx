@@ -7,13 +7,13 @@ const ICONS = [Clock, Sparkles, Truck, MessageCircle, Gift];
 
 export default function Benefits() {
   return (
-    <section id="nosotros" className="relative py-24 overflow-hidden">
+    <section id="nosotros" className="relative py-12 sm:py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-red-950/10 to-black -z-10" />
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-red-900/20 rounded-full blur-3xl -z-10 animate-pulse" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="text-5xl sm:text-6xl font-bold text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-16">
+        <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
             Por que elegir{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
               EXELSIOR

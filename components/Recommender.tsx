@@ -75,7 +75,7 @@ export default function Recommender() {
     return (
       <section
         id="recomendador"
-        className="relative py-24 overflow-hidden bg-gradient-to-b from-black via-red-950/10 to-black"
+        className="relative py-12 sm:py-24 overflow-hidden bg-gradient-to-b from-black via-red-950/10 to-black"
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-8">
@@ -144,7 +144,7 @@ export default function Recommender() {
   return (
     <section
       id="recomendador"
-      className="relative py-24 overflow-hidden bg-gradient-to-b from-black via-red-950/10 to-black"
+      className="relative py-12 sm:py-24 overflow-hidden bg-gradient-to-b from-black via-red-950/10 to-black"
     >
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-900/20 rounded-full blur-3xl -z-10 animate-pulse" />
 
@@ -154,7 +154,7 @@ export default function Recommender() {
             <Sparkles size={18} />
             Recomendador inteligente
           </div>
-          <h2 className="text-5xl sm:text-6xl font-bold text-white">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
             Encontra tu{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
               perfume ideal

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search, X } from "lucide-react";
+import { useState, useMemo, useCallback } from "react";
+import { Search, X, ChevronDown } from "lucide-react";
 import { products, Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 
@@ -104,9 +104,16 @@ function normalizeText(text: string): string {
     .replace(/[̀-ͯ]/g, "");
 }
 
+const INITIAL_VISIBLE = 3;
+
 export default function ProductGrid() {
   const [selectedGender, setSelectedGender] = useState<GenderFilter>("Masculino");
   const [searchQuery, setSearchQuery] = useState("");
+  const [expandedBrands, setExpandedBrands] = useState<Record<string, boolean>>({});
+
+  const toggleBrand = useCallback((brand: string) => {
+    setExpandedBrands((prev) => ({ ...prev, [brand]: !prev[brand] }));
+  }, []);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return null;
@@ -131,19 +138,19 @@ export default function ProductGrid() {
   const brandGroups = groupByBrand(isSearching && searchResults ? searchResults : genderProducts);
 
   return (
-    <section id="perfumes" className="relative py-24 overflow-hidden">
+    <section id="perfumes" className="relative py-12 sm:py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-red-950/10 to-black -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="text-5xl sm:text-6xl font-bold text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
+        <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
             Nuestras{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
               Fragancias
             </span>{" "}
             Premium
           </h2>
-          <p className="text-gray-400 text-lg leading-relaxed">
+          <p className="text-gray-400 text-sm sm:text-lg leading-relaxed">
             Cada aroma es una historia. Descubri nuestras fragancias arabes
             premium, cuidadosamente seleccionadas para quienes aprecian la
             verdadera calidad y sofisticacion.
@@ -152,41 +159,44 @@ export default function ProductGrid() {
 
         <div className="max-w-xl mx-auto relative">
           <Search
-            size={20}
+            size={18}
             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
           />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar perfume por nombre, marca o notas..."
-            className="w-full pl-12 pr-12 py-4 bg-gray-900/50 border border-red-900/30 focus:border-red-500/50 rounded-xl text-white placeholder-gray-500 outline-none transition-colors duration-300 text-base"
+            placeholder="Buscar por nombre, marca o notas..."
+            className="w-full pl-11 pr-11 py-3 sm:py-4 bg-gray-900/50 border border-red-900/30 focus:border-red-500/50 rounded-xl text-white placeholder-gray-500 outline-none transition-colors duration-300 text-sm sm:text-base"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-400 transition-colors"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           )}
         </div>
 
         {isSearching ? (
           <div className="text-center">
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm sm:text-base">
               {searchResults && searchResults.length > 0
                 ? `${searchResults.length} resultado${searchResults.length > 1 ? "s" : ""} para "${searchQuery}"`
                 : `No se encontraron resultados para "${searchQuery}"`}
             </p>
           </div>
         ) : (
-          <div className="flex justify-center gap-3 sm:gap-4">
+          <div className="flex justify-center gap-2 sm:gap-4">
             {GENDER_TABS.map((tab) => (
               <button
                 key={tab.value}
-                onClick={() => setSelectedGender(tab.value)}
-                className={`px-5 sm:px-8 py-3 rounded-lg font-bold text-base sm:text-lg transition-all duration-300 ${
+                onClick={() => {
+                  setSelectedGender(tab.value);
+                  setExpandedBrands({});
+                }}
+                className={`px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg font-bold text-sm sm:text-lg transition-all duration-300 ${
                   selectedGender === tab.value
                     ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                     : "border-2 border-red-900/30 text-gray-300 hover:border-red-500/50 hover:text-red-400"
@@ -198,20 +208,53 @@ export default function ProductGrid() {
           </div>
         )}
 
-        {brandGroups.map((group) => (
-          <div key={group.brand} className="space-y-8">
-            <div className="text-center border-t border-red-900/30 pt-10">
-              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
-                {group.brand}
-              </h3>
+        {brandGroups.map((group) => {
+          const isExpanded = expandedBrands[group.brand] || isSearching;
+          const visibleProducts = isExpanded
+            ? group.products
+            : group.products.slice(0, INITIAL_VISIBLE);
+          const hasMore = group.products.length > INITIAL_VISIBLE;
+
+          return (
+            <div key={group.brand} className="space-y-6 sm:space-y-8">
+              <div className="text-center border-t border-red-900/30 pt-6 sm:pt-10">
+                <h3 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
+                  {group.brand}
+                </h3>
+                <p className="text-gray-500 text-xs sm:text-sm mt-1">
+                  {group.products.length} {group.products.length === 1 ? "fragancia" : "fragancias"}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+                {visibleProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+              {hasMore && !isExpanded && (
+                <div className="text-center">
+                  <button
+                    onClick={() => toggleBrand(group.brand)}
+                    className="inline-flex items-center gap-2 border-2 border-red-500/40 hover:border-red-500 text-red-400 hover:text-red-300 font-bold py-3 px-6 rounded-lg transition-all duration-300 text-sm sm:text-base"
+                  >
+                    Ver {group.products.length - INITIAL_VISIBLE} mas de {group.brand}
+                    <ChevronDown size={18} />
+                  </button>
+                </div>
+              )}
+              {hasMore && isExpanded && !isSearching && (
+                <div className="text-center">
+                  <button
+                    onClick={() => toggleBrand(group.brand)}
+                    className="inline-flex items-center gap-2 text-gray-500 hover:text-red-400 font-medium py-2 px-4 transition-colors duration-300 text-sm"
+                  >
+                    Ver menos
+                    <ChevronDown size={16} className="rotate-180" />
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {group.products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
