@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { Search, X } from "lucide-react";
 import { products, Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 
@@ -96,11 +97,38 @@ function groupByBrand(items: Product[]): { brand: string; products: Product[] }[
     .map((brand) => ({ brand, products: groups[brand] }));
 }
 
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "");
+}
+
 export default function ProductGrid() {
   const [selectedGender, setSelectedGender] = useState<GenderFilter>("Masculino");
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return null;
+
+    const query = normalizeText(searchQuery.trim());
+    return products.filter((p) => {
+      const name = normalizeText(p.name);
+      const brand = normalizeText(BRAND_MAP[p.id] ?? "");
+      const category = normalizeText(p.category);
+      const notes = p.notes.map(normalizeText).join(" ");
+      return (
+        name.includes(query) ||
+        brand.includes(query) ||
+        category.includes(query) ||
+        notes.includes(query)
+      );
+    });
+  }, [searchQuery]);
+
+  const isSearching = searchQuery.trim().length > 0;
   const genderProducts = products.filter((p) => p.gender === selectedGender);
-  const brandGroups = groupByBrand(genderProducts);
+  const brandGroups = groupByBrand(isSearching && searchResults ? searchResults : genderProducts);
 
   return (
     <section id="perfumes" className="relative py-24 overflow-hidden">
@@ -122,21 +150,53 @@ export default function ProductGrid() {
           </p>
         </div>
 
-        <div className="flex justify-center gap-3 sm:gap-4">
-          {GENDER_TABS.map((tab) => (
+        <div className="max-w-xl mx-auto relative">
+          <Search
+            size={20}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar perfume por nombre, marca o notas..."
+            className="w-full pl-12 pr-12 py-4 bg-gray-900/50 border border-red-900/30 focus:border-red-500/50 rounded-xl text-white placeholder-gray-500 outline-none transition-colors duration-300 text-base"
+          />
+          {searchQuery && (
             <button
-              key={tab.value}
-              onClick={() => setSelectedGender(tab.value)}
-              className={`px-5 sm:px-8 py-3 rounded-lg font-bold text-base sm:text-lg transition-all duration-300 ${
-                selectedGender === tab.value
-                  ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                  : "border-2 border-red-900/30 text-gray-300 hover:border-red-500/50 hover:text-red-400"
-              }`}
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-400 transition-colors"
             >
-              {tab.label}
+              <X size={20} />
             </button>
-          ))}
+          )}
         </div>
+
+        {isSearching ? (
+          <div className="text-center">
+            <p className="text-gray-400">
+              {searchResults && searchResults.length > 0
+                ? `${searchResults.length} resultado${searchResults.length > 1 ? "s" : ""} para "${searchQuery}"`
+                : `No se encontraron resultados para "${searchQuery}"`}
+            </p>
+          </div>
+        ) : (
+          <div className="flex justify-center gap-3 sm:gap-4">
+            {GENDER_TABS.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setSelectedGender(tab.value)}
+                className={`px-5 sm:px-8 py-3 rounded-lg font-bold text-base sm:text-lg transition-all duration-300 ${
+                  selectedGender === tab.value
+                    ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                    : "border-2 border-red-900/30 text-gray-300 hover:border-red-500/50 hover:text-red-400"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {brandGroups.map((group) => (
           <div key={group.brand} className="space-y-8">
