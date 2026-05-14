@@ -120,11 +120,22 @@ body {
 
 .neon-page-border {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   border: 2px solid rgba(220, 38, 38, 0.5);
   pointer-events: none;
   z-index: 9999;
   animation: neonPagePulse 3s ease-in-out infinite;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .neon-page-border {
+    border-width: 1.5px;
+  }
 }
 
 .logo-neon-hero:hover {
