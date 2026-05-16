@@ -101,10 +101,19 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.description}
           </p>
 
-          <div className="border-t border-red-900/30 pt-2 sm:pt-4">
+          <div className="border-t border-red-900/30 pt-2 sm:pt-4 flex items-center justify-between">
             <p className="text-lg sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
               ${product.price.toLocaleString()}
             </p>
+            <span className={`text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full ${
+              product.stock > 2
+                ? "bg-green-900/30 text-green-400 border border-green-700/40"
+                : product.stock > 0
+                  ? "bg-yellow-900/30 text-yellow-400 border border-yellow-700/40"
+                  : "bg-red-900/30 text-red-400 border border-red-700/40"
+            }`}>
+              {product.stock > 0 ? `${product.stock} disp.` : "Agotado"}
+            </span>
           </div>
 
           <button
